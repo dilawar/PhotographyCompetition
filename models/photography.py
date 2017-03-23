@@ -1,3 +1,6 @@
+from user_constants import default_value
+
+
 class PhotoObject:
     """
     Simple class to hold all information about single photo
@@ -15,6 +18,33 @@ class PhotoObject:
         self.photo_url = None  # Absolute path of photo. BEAWARE! this can be deleted for old photos
         self.author_email = None  # This will not be exact email, because intranet userID's are weirdly formatted
         self.file_name = None  # Name of file in which we have saved photo on local machine
+        self.key = None  # Unique identifier. Will be helpful in analysis
+
+    @classmethod
+    def make(cls, properties: dict):
+        """
+        Makes class instance from dictionary object
+        :param properties: dict received from json
+        :return: PhotoObject instance
+        """
+        photo = cls()
+        photo.author = properties.get("author")
+        photo.url = properties.get("url")
+        photo.title = properties.get("title")
+        photo.photo_url = properties.get("photo_url")
+        photo.author_email = properties.get("author_email")
+        photo.file_name = properties.get("file_name")
+        photo.key = properties.get("key")
+        photo.total_votes = properties.get("total_votes")
+        photo.creation_date = properties.get("creation_date")
+        photo.average_votes = properties.get("average_votes")
+        if photo.creation_date == default_value:
+            photo.creation_date = None
+        if photo.total_votes == default_value:
+            photo.total_votes = None
+        if photo.average_votes == default_value:
+            photo.average_votes = None
+        return photo
 
     def get_all(self) -> list:
         """
@@ -22,12 +52,12 @@ class PhotoObject:
         This function can be directly used in printing into file
         :return: list of all the meta-data
         """
-        points = "N/A"  # This is important if someone has run script before voting
+        points = default_value  # This is important if someone has run script before voting
         if self.total_votes is not None and self.average_votes is not None:
             points = (float(self.total_votes) * float(self.average_votes))
         else:  # if votes are not available
-            self.total_votes = "N/A"
-            self.average_votes = "N/A"
+            self.total_votes = default_value
+            self.average_votes = default_value
         return [self.author,
                 self.author_email,
                 points,

@@ -2,6 +2,6 @@
 Main script file
 """
 
-from retrieval.intranet import do_all
+from retrieval.analyze import get_defaulters
 
-do_all()
+get_defaulters("Shadows and Silhouettes", "23 March 2017, 2 PM.")

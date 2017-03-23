@@ -27,16 +27,8 @@ import urllib.request as request
 
 from bs4 import BeautifulSoup
 
-from credentials.server_paths import BASE_URL
 from models.photography import PhotoObject as Photo
-
-base_url = BASE_URL  # Base url of photography competition site
-photo_store_folder = "pics/"  # Folder where downloaded photos will be saved
-photo_prefix = "file"  # Additional counter and name will be added
-
-# All details and meta-data will be added to this file (.csv)
-# Additionally, one .json file will also be created.
-output_file_name = "output"
+from user_constants import *
 
 
 def read_main_page() -> list:

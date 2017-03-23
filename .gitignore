@@ -2,3 +2,4 @@
 credentials/firebase_admin_sdk.json
 credentials/server_paths.py
 *.pyc
+pics/
