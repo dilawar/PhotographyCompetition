@@ -83,14 +83,15 @@ def get_all_info() -> list:
         average_votes = None
         creation_date = None
         total_votes = None
+        # use "views-field views-field-field-photo-rating active" when voting is still going on
         try:
             creation_date = a.find("td", {"class": "views-field views-field-created active"}).text.strip()
             average_votes = \
-                get_number(a.find("td", {"class": "views-field views-field-field-photo-rating active"}).find("div", {
+                get_number(a.find("td", {"class": "views-field views-field-field-photo-rating"}).find("div", {
                     "class": "fivestar-summary fivestar-summary-average-count"})
                            .find("span", {"class": "average-rating"}).text)[0]
             total_votes = \
-                get_number(a.find("td", {"class": "views-field views-field-field-photo-rating active"}).find("div", {
+                get_number(a.find("td", {"class": "views-field views-field-field-photo-rating"}).find("div", {
                     "class": "fivestar-summary fivestar-summary-average-count"}).find("span",
                                                                                       {"class": "total-votes"}).text)[0]
         except AttributeError:

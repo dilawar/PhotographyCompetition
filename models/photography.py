@@ -1,3 +1,4 @@
+from credentials.server_paths import BASE_URL
 from user_constants import default_value
 
 
@@ -62,7 +63,7 @@ class PhotoObject:
                 self.author_email,
                 points,
                 self.title,
-                self.url,
+                BASE_URL + self.url,
                 self.total_votes,
                 self.average_votes,
                 self.creation_date,
