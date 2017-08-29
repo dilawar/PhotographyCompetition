@@ -2,6 +2,16 @@
 Main script file
 """
 
-from retrieval.intranet import do_all
+from judging import judge
+from retrieval import intranet
 
-do_all()
+
+def judge_cal():
+    judge.calculate_score("final_Scores.xlsx")
+
+
+def intra():
+    intranet.do_all("Theme Name", "last date", True)
+
+
+judge_cal()

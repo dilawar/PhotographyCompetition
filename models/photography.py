@@ -68,3 +68,8 @@ class PhotoObject:
                 self.average_votes,
                 self.creation_date,
                 self.photo_url]
+
+
+class Judge:
+    def __init__(self):
+        pass

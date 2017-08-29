@@ -77,7 +77,6 @@ def get_all_info() -> list:
         url = a.find("td", {"class": "views-field views-field-title"}).find("a").get('href')
         title = a.find("td", {"class": "views-field views-field-title"}).find("a").text
         photo_url = a.find("td", {"class": "views-field views-field-field-photo-image"}).find("a").get('href')
-        author = a.find("td", {"class": "views-field views-field-field-personal-first-name"}).text.strip()
         # Following items needs to be check if they exists
         # because in early phases of competition, this information will not be available.
         average_votes = None
@@ -85,7 +84,7 @@ def get_all_info() -> list:
         total_votes = None
         # use "views-field views-field-field-photo-rating active" when voting is still going on
         try:
-            creation_date = a.find("td", {"class": "views-field views-field-created active"}).text.strip()
+            creation_date = a.find("td", {"class": "views-field views-field-created"}).text.strip()
             average_votes = \
                 get_number(a.find("td", {"class": "views-field views-field-field-photo-rating"}).find("div", {
                     "class": "fivestar-summary fivestar-summary-average-count"})
@@ -96,6 +95,12 @@ def get_all_info() -> list:
                                                                                       {"class": "total-votes"}).text)[0]
         except AttributeError:
             print("Skipping data field because it was not available")
+
+        try:
+            author = a.find("td", {"class": "views-field views-field-field-personal-first-name"}).text.strip()
+        except AttributeError:
+            author = "N/A"
+            print("Author name is hidden")
 
         # Create new object
         current_pic = Photo()
@@ -171,9 +176,38 @@ def save_details(photos: list) -> None:
         print(json.dumps(all_info), file=f)
 
 
-def do_all():
+def create_email(photo: Photo, theme, last_date):
+    replace_values = {
+        "$ENTRY$": photo.title,
+        "$THEME$": theme,
+        "$URL$": BASE_URL + photo.url,
+        "$LAST_DATE$": last_date,
+    }
+
+    email = ""
+    with open("models/selected_template") as f:
+        for line in f:
+            for key in replace_values:
+                line = line.replace(key, replace_values.get(key))
+            email += line
+
+    filename = re.sub('[^A-Za-z0-9]+', '', photo.title) + ".txt"
+    with open(filename, "w") as o:
+        print(email, file=o)
+
+
+def do_all(theme: str, last_day: str, shuffle=False):
     """
     For lazy people. This function does entire process
     :return: Download all photos with thier information and details
     """
-    save_details(retrieve_pics(get_all_info()))
+    pics = retrieve_pics(get_all_info())
+    if shuffle:
+        pics.sort(key=lambda x: float(x.total_votes), reverse=True)
+    save_details(pics)
+    selected = [pics[0], pics[1]]
+    for i in range(2, len(pics)):
+        if pics[i].total_votes == pics[1]:
+            selected.append(pics[i])
+    for s in selected:
+        create_email(s, theme, last_day)
