@@ -44,11 +44,6 @@ class PhotoObject:
         photo.total_votes = properties.get("total_votes")
         photo.creation_date = properties.get("creation_date")
         photo.average_votes = properties.get("average_votes")
-        if photo.total_votes is not None and photo.average_votes is not None:
-            photo.points = (
-                float(photo.total_votes) * float(photo.average_votes))
-        else:  # if votes are not available
-            photo.points = 0
 
         if photo.creation_date == default_value:
             photo.creation_date = None

@@ -129,6 +129,14 @@ def get_all_info() -> list:
         current_pic.total_votes = total_votes
         current_pic.url = url
         # current_pic.author_email = get_author_email(url)
+
+        if current_pic.total_votes is not None and current_pic.average_votes is not None:
+            current_pic.points = (
+                float(current_pic.total_votes) * float(
+                    current_pic.average_votes))
+        else:  # if votes are not available
+            current_pic.points = 0
+
         # add to list
         photos.append(current_pic)
 
@@ -227,6 +235,36 @@ def create_email(photo: Photo, theme, last_date) -> None:
         print(email, file=o)
 
 
+def make_line(photo):
+    title = photo.title
+    if len(title) > 57:
+        title = title[:57] + "..."
+    return "| %s | %s | %s | %.2f |" % (
+        title, photo.total_votes, photo.average_votes, photo.points)
+
+
+def create_md_file(pics) -> None:
+    selected = pics[:10]
+    last_entry_score = selected[-1].points
+    for i in range(len(selected), len(pics) - 1):
+        if pics[i].points == last_entry_score and last_entry_score != 0:
+            selected.append(pics[i])
+    with open('public.md', "w") as o:
+        header = "## Top %d Shortlisted entries for people's choice\n" % len(
+            selected)
+        line2 = "see [scoring system](https://github.com/photography-ncbs" \
+                "/competition/blob/master/scoring.md) for more information \n\n"
+        line3 = "| Entry Title | Total Votes | Average Votes | Total Score |\n" \
+                "| --- | --- |--- |---  |"
+        print(header, file=o)
+        print(line2, file=o)
+        print(line3, file=o)
+        for s in selected:
+            print(make_line(s), file=o)
+
+    pass
+
+
 def do_all(theme: str, last_day: str):
     """
     For lazy people. This function does entire process
@@ -245,3 +283,5 @@ def do_all(theme: str, last_day: str):
 
     for s in selected:
         create_email(s, theme, last_day)
+
+    create_md_file(pics)
