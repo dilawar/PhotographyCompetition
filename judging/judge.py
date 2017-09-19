@@ -35,7 +35,8 @@ def calculate_score(file_name):
     for j in score:
         min_value = min(j[j > 0])
         max_value = max(j[j > 0])
-        m = [(x - min_value) * 100 / (max_value - min_value) if (x > 0) else 0 for x in j]
+        m = [(x - min_value) * 100 / (max_value - min_value) if (x > 0) else 0
+             for x in j]
         for i in range(len(j)):
             if j[i] != 0:
                 j[i] = final_score(m[i])

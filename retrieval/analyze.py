@@ -14,13 +14,15 @@ try:
     with open(output_file_name + ".json", "r") as f:
         data = json.load(f)
 except FileNotFoundError:
-    print("You need %s.json file created by intranet.py script to use this function" % output_file_name)
+    print("You need %s.json file created by intranet.py script to use this "
+          "function" % output_file_name)
 
 
 def make_defaulter_email(photos: list, theme: str, time: str):
     photo_string = ""
     for i in range(len(photos)):
-        photo_string += "(%s) %s (%s)" % (i + 1, photos[i].title, base_url + photos[i].url) + "\n"
+        photo_string += "(%s) %s (%s)" % (
+            i + 1, photos[i].title, base_url + photos[i].url) + "\n"
 
     last_message = "%s photos which were uploaded last" % (len(photos) - 3)
     if len(photos) - 3 == 1:

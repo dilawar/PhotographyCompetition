@@ -2,12 +2,14 @@
 Copyright 2017 (or whatever, you care?) Rohit Suratekar
 Code is released under MIT license.
 
-TL;DR : use "do_all()" function and retrieve all photo and related info. You can skip reading following.
+TL;DR : use "do_all()" function and retrieve all photo and related info. You
+can skip reading following.
 
-Retrieves data from intranet about photos and associated meta-data.
-Ideally it just typical web crawler which scraps the photography page.
-Photography page is written in classic html-css-javascript style with Drupal template.
-This script just extracts all the css tags and then extract whichever field is needed.
+Retrieves data from intranet about photos and associated meta-data. Ideally
+it just typical web crawler which scraps the photography page. Photography
+page is written in classic html-css-javascript style with Drupal template.
+This script just extracts all the css tags and then extract whichever field
+is needed.
 
 General workflow should be
 1) Retrieve files (get_all_info())
@@ -46,9 +48,10 @@ def read_main_page() -> list:
 
 def get_number(s) -> list:
     """
-    Average votes and total votes are in some different format. We need regex power to get what we need!
-    :param s: String containing votes details
-    :return: list of items after compiling regex. We need first item of this
+    Average votes and total votes are in some different format. We need
+    regex power to get what we need! :param s: String containing votes
+    details :return: list of items after compiling regex. We need first item
+    of this
     """
     return re.findall(r'[-+]?\d*\.\d+|\d+', s)
 
@@ -68,36 +71,50 @@ def get_author_email(u) -> str:
 
 def get_all_info() -> list:
     """
-    Main function to retrieve all the information regarding all the uploaded photos
-    :return: List of PhotoObjects
+    Main function to retrieve all the information regarding all the uploaded
+    photos :return: List of PhotoObjects
     """
     photos = []
     # iterate over all odd and even category
     for a in read_main_page():
-        url = a.find("td", {"class": "views-field views-field-title"}).find("a").get('href')
-        title = a.find("td", {"class": "views-field views-field-title"}).find("a").text
-        photo_url = a.find("td", {"class": "views-field views-field-field-photo-image"}).find("a").get('href')
-        # Following items needs to be check if they exists
-        # because in early phases of competition, this information will not be available.
+        url = a.find("td", {"class": "views-field views-field-title"}).find(
+            "a").get('href')
+        title = a.find("td", {"class": "views-field views-field-title"}).find(
+            "a").text
+        photo_url = a.find("td", {
+            "class": "views-field views-field-field-photo-image"}).find(
+            "a").get('href')
+        # Following items needs to be check if they exists because in early
+        # phases of competition, this information will not be available.
         average_votes = None
         creation_date = None
         total_votes = None
-        # use "views-field views-field-field-photo-rating active" when voting is still going on
+        # use "views-field views-field-field-photo-rating active" when
+        # voting is still going on
         try:
-            creation_date = a.find("td", {"class": "views-field views-field-created"}).text.strip()
+            creation_date = a.find("td", {
+                "class": "views-field views-field-created"}).text.strip()
             average_votes = \
-                get_number(a.find("td", {"class": "views-field views-field-field-photo-rating"}).find("div", {
-                    "class": "fivestar-summary fivestar-summary-average-count"})
+                get_number(a.find("td", {
+                    "class": "views-field views-field-field-photo-rating"}).find(
+                    "div", {
+                        "class": "fivestar-summary "
+                                 "fivestar-summary-average-count"})
                            .find("span", {"class": "average-rating"}).text)[0]
             total_votes = \
-                get_number(a.find("td", {"class": "views-field views-field-field-photo-rating"}).find("div", {
-                    "class": "fivestar-summary fivestar-summary-average-count"}).find("span",
-                                                                                      {"class": "total-votes"}).text)[0]
+                get_number(a.find("td", {
+                    "class": "views-field views-field-field-photo-rating"}).find(
+                    "div", {
+                        "class": "fivestar-summary "
+                                 "fivestar-summary-average-count"}).find(
+                    "span",
+                    {"class": "total-votes"}).text)[0]
         except AttributeError:
             print("Skipping data field because it was not available")
 
         try:
-            author = a.find("td", {"class": "views-field views-field-field-personal-first-name"}).text.strip()
+            author = a.find("td", {
+                "class": "views-field views-field-field-personal-first-name"}).text.strip()
         except AttributeError:
             author = "N/A"
             print("Author name is hidden")
@@ -111,7 +128,7 @@ def get_all_info() -> list:
         current_pic.photo_url = photo_url
         current_pic.total_votes = total_votes
         current_pic.url = url
-        current_pic.author_email = get_author_email(url)
+        # current_pic.author_email = get_author_email(url)
         # add to list
         photos.append(current_pic)
 
@@ -120,21 +137,27 @@ def get_all_info() -> list:
 
 def retrieve_pics(photos: list) -> list:
     """
-    Downloads photo from absolute url retrieved from `get_all_info()` function.
-    This also added file name details into PhotoObjects and returns same list with updated parameter
-    :param photos: List of all PhotoObjects
-    :return: Same list with `file_name' field updated
+    Downloads photo from absolute url retrieved from `get_all_info()`
+    function. This also added file name details into PhotoObjects and
+    returns same list with updated parameter :param photos: List of all
+    PhotoObjects :return: Same list with `file_name' field updated
     """
     file_counter = 1  # Counter for files
     if not os.path.exists(photo_store_folder):
         # Make folder if it does not exists
         os.makedirs(photo_store_folder)
+    if not os.path.exists(winner_email_folder):
+        # Make folder if it does not exists
+        os.makedirs(winner_email_folder)
 
     for p2 in photos:
-        # Create file name
-        # Besides prefix, add little bit of title. Remove all the special characters from title and use string sequence
-        filename = photo_prefix + "%d_%s" % (file_counter, re.sub('[^A-Za-z0-9]+', '', p2.title))
-        filename = filename[:20] + ".jpg"  # If name if more than 20 characters, strip it and add file extension
+        # Create file name Besides prefix, add little bit of title. Remove
+        # all the special characters from title and use string sequence
+        filename = photo_prefix + "%d_%s" % (
+            file_counter, re.sub('[^A-Za-z0-9]+', '', p2.title))
+        filename = filename[
+                   :20] + ".jpg"  # If name if more than 20 characters,
+        # strip it and add file extension
         p2.file_name = filename  # Update file_name field in the PhotoObject
         testfile = request.URLopener()  # start downloading
         testfile.retrieve(p2.photo_url, photo_store_folder + filename)  # Save
@@ -145,10 +168,9 @@ def retrieve_pics(photos: list) -> list:
 
 def save_details(photos: list) -> None:
     """
-    Saves details into file.
-    Important to use encoding as utf-8 because some characters can not be written in regular parser
-    :param photos: List of PhotoObjects
-    :return: None
+    Saves details into file. Important to use encoding as utf-8 because some
+    characters can not be written in regular parser :param photos: List of
+    PhotoObjects :return: None
     """
     # Writes CSV files for `general public'
     with open(output_file_name + ".csv", "w", encoding="utf-8") as output:
@@ -156,10 +178,12 @@ def save_details(photos: list) -> None:
         for p in photos:
             writer.writerow(p.get_all())
 
-    # Write json file for advance users, if anyone want's to use this information for further process.
+    # Write json file for advance users, if anyone want's to use this
+    # information for further process.
     all_info = {}
     for photo in photos:
-        key = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))  # Create some random key
+        key = ''.join(random.choices(string.ascii_uppercase + string.digits,
+                                     k=10))  # Create some random key
         # Create json entry
         all_info[key] = {"uid": key,
                          "url": photo.url,
@@ -176,7 +200,13 @@ def save_details(photos: list) -> None:
         print(json.dumps(all_info), file=f)
 
 
-def create_email(photo: Photo, theme, last_date):
+def create_email(photo: Photo, theme, last_date) -> None:
+    """
+    Creates template email which can be directly sent to winners
+    :param photo: Photo Object
+    :param theme: Current Theme
+    :param last_date: Last date of submission of images
+    """
     replace_values = {
         "$ENTRY$": photo.title,
         "$THEME$": theme,
@@ -191,23 +221,27 @@ def create_email(photo: Photo, theme, last_date):
                 line = line.replace(key, replace_values.get(key))
             email += line
 
-    filename = re.sub('[^A-Za-z0-9]+', '', photo.title) + ".txt"
+    filename = winner_email_folder + re.sub('[^A-Za-z0-9]+', '',
+                                            photo.title) + ".txt"
     with open(filename, "w") as o:
         print(email, file=o)
 
 
-def do_all(theme: str, last_day: str, shuffle=False):
+def do_all(theme: str, last_day: str):
     """
     For lazy people. This function does entire process
-    :return: Download all photos with thier information and details
+    :return: Download all photos with their information and details
     """
     pics = retrieve_pics(get_all_info())
-    if shuffle:
-        pics.sort(key=lambda x: float(x.total_votes), reverse=True)
+    pics.sort(key=lambda x: x.points, reverse=True)
     save_details(pics)
-    selected = [pics[0], pics[1]]
-    for i in range(2, len(pics)):
-        if pics[i].total_votes == pics[1]:
+    no_of_winners = max([2, round(len(pics) / 15)])
+    selected = pics[:no_of_winners]
+    last_entry_score = selected[-1].points
+
+    for i in range(len(selected) - 1, len(pics) - 1):
+        if pics[i].points == last_entry_score and last_entry_score != 0:
             selected.append(pics[i])
+
     for s in selected:
         create_email(s, theme, last_day)

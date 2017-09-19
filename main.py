@@ -11,7 +11,7 @@ def judge_cal():
 
 
 def intra():
-    intranet.do_all("Theme Name", "last date", True)
+    intranet.do_all("Landscapes", "27 September 2017")
 
 
-judge_cal()
+intra()

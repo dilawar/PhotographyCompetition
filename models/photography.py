@@ -8,17 +8,22 @@ class PhotoObject:
     """
 
     def __init__(self):
-        # Relative url. Need this to retrieve email ID or more specific details.
-        # BEAWARE! this can be deleted for old photos
+        # Relative url. Need this to retrieve email ID or more specific
+        # details. BEAWARE! this can be deleted for old photos
         self.url = None
-        self.author = None  # Name of photographer as shown in the intranet website
+        self.author = None  # Name of photographer as shown in the intranet
+        # website
         self.title = None  # Photo caption
         self.total_votes = None  # Total number of votes (if any)
         self.average_votes = None  # Average votes (if any)
         self.creation_date = None  # Date of photo upload
-        self.photo_url = None  # Absolute path of photo. BEAWARE! this can be deleted for old photos
-        self.author_email = None  # This will not be exact email, because intranet userID's are weirdly formatted
-        self.file_name = None  # Name of file in which we have saved photo on local machine
+        self.points = 0  # Final points from voting
+        self.photo_url = None  # Absolute path of photo. BEAWARE! this can
+        # be deleted for old photos
+        self.author_email = None  # This will not be exact email, because
+        # intranet userID's are weirdly formatted
+        self.file_name = None  # Name of file in which we have saved photo
+        # on local machine
         self.key = None  # Unique identifier. Will be helpful in analysis
 
     @classmethod
@@ -39,6 +44,12 @@ class PhotoObject:
         photo.total_votes = properties.get("total_votes")
         photo.creation_date = properties.get("creation_date")
         photo.average_votes = properties.get("average_votes")
+        if photo.total_votes is not None and photo.average_votes is not None:
+            photo.points = (
+                float(photo.total_votes) * float(photo.average_votes))
+        else:  # if votes are not available
+            photo.points = 0
+
         if photo.creation_date == default_value:
             photo.creation_date = None
         if photo.total_votes == default_value:
@@ -53,15 +64,10 @@ class PhotoObject:
         This function can be directly used in printing into file
         :return: list of all the meta-data
         """
-        points = default_value  # This is important if someone has run script before voting
-        if self.total_votes is not None and self.average_votes is not None:
-            points = (float(self.total_votes) * float(self.average_votes))
-        else:  # if votes are not available
-            self.total_votes = default_value
-            self.average_votes = default_value
         return [self.author,
                 self.author_email,
-                points,
+                self.points,
+                self.file_name,
                 self.title,
                 BASE_URL + self.url,
                 self.total_votes,
