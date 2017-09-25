@@ -5,3 +5,7 @@ credentials/server_paths.py
 pics/
 winners/
 final_scores.xlsx
+public.md
+output.json
+output.csv
+judge.md

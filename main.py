@@ -3,7 +3,7 @@ Main script file
 """
 
 from judging import judge
-from retrieval import intranet
+from retrieval import intranet, analyze
 
 
 def judge_cal():
@@ -14,4 +14,8 @@ def intra():
     intranet.do_all("Landscapes", "27 September 2017")
 
 
-intra()
+def check_defaulters():
+    analyze.get_defaulters("Landscapes", "27 September 2017")
+
+
+judge_cal()

@@ -128,7 +128,7 @@ def get_all_info() -> list:
         current_pic.photo_url = photo_url
         current_pic.total_votes = total_votes
         current_pic.url = url
-        # current_pic.author_email = get_author_email(url)
+        current_pic.author_email = get_author_email(url)
 
         if current_pic.total_votes is not None and current_pic.average_votes is not None:
             current_pic.points = (
