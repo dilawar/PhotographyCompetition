@@ -81,6 +81,8 @@ def get_all_info() -> list:
             "a").get('href')
         title = a.find("td", {"class": "views-field views-field-title"}).find(
             "a").text
+        description = a.find("td", {
+            "class": "views-field views-field-field-photo-desc"}).text
         photo_url = a.find("td", {
             "class": "views-field views-field-field-photo-image"}).find(
             "a").get('href')
@@ -128,7 +130,8 @@ def get_all_info() -> list:
         current_pic.photo_url = photo_url
         current_pic.total_votes = total_votes
         current_pic.url = url
-        current_pic.author_email = get_author_email(url)
+        current_pic.description = description
+        # current_pic.author_email = get_author_email(url)
 
         if current_pic.total_votes is not None and current_pic.average_votes is not None:
             current_pic.points = (
@@ -161,8 +164,11 @@ def retrieve_pics(photos: list) -> list:
     for p2 in photos:
         # Create file name Besides prefix, add little bit of title. Remove
         # all the special characters from title and use string sequence
-        filename = photo_prefix + "%d_%s" % (
-            file_counter, re.sub('[^A-Za-z0-9]+', '', p2.title))
+        count_text = str(file_counter)
+        if len(count_text) == 1:
+            count_text = "0" + count_text
+        filename = photo_prefix + "%s_%s" % (
+            count_text, re.sub('[^A-Za-z0-9]+', '', p2.title))
         filename = filename[
                    :20] + ".jpg"  # If name if more than 20 characters,
         # strip it and add file extension

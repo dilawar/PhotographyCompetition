@@ -5,17 +5,21 @@ Main script file
 from judging import judge
 from retrieval import intranet, analyze
 
+THEME = "Food across the world"
+
+DEADLINE = "26 November 2017"
+
 
 def judge_cal():
     judge.calculate_score("final_Scores.xlsx")
 
 
 def intra():
-    intranet.do_all("Landscapes", "27 September 2017")
+    intranet.do_all(THEME, DEADLINE)
 
 
 def check_defaulters():
-    analyze.get_defaulters("Landscapes", "27 September 2017")
+    analyze.get_defaulters(THEME, DEADLINE)
 
 
-judge_cal()
+intra()

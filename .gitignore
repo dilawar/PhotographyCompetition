@@ -1,11 +1,9 @@
-.idea/
-credentials/firebase_admin_sdk.json
-credentials/server_paths.py
 *.pyc
+.idea/
+credentials/
 pics/
 winners/
 final_scores.xlsx
-public.md
-output.json
 output.csv
-judge.md
+output.json
+public.md

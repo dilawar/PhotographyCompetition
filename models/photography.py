@@ -25,6 +25,7 @@ class PhotoObject:
         self.file_name = None  # Name of file in which we have saved photo
         # on local machine
         self.key = None  # Unique identifier. Will be helpful in analysis
+        self.description = ""
 
     @classmethod
     def make(cls, properties: dict):
@@ -44,6 +45,7 @@ class PhotoObject:
         photo.total_votes = properties.get("total_votes")
         photo.creation_date = properties.get("creation_date")
         photo.average_votes = properties.get("average_votes")
+        photo.description = properties.get("description")
 
         if photo.creation_date == default_value:
             photo.creation_date = None
@@ -65,6 +67,7 @@ class PhotoObject:
                 self.file_name,
                 self.title,
                 BASE_URL + self.url,
+                self.description,
                 self.total_votes,
                 self.average_votes,
                 self.creation_date,
