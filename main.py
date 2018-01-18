@@ -5,9 +5,9 @@ Main script file
 from judging import judge
 from retrieval import intranet, analyze
 
-THEME = "Food across the world"
+THEME = "Portraits"
 
-DEADLINE = "26 November 2017"
+DEADLINE = "25 January 2018"
 
 
 def judge_cal():
