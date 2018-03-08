@@ -31,7 +31,6 @@ from bs4 import BeautifulSoup
 from models.photography import PhotoObject as Photo
 from user_constants import *
 
-
 def read_main_page() -> list:
     """
     Read entire page. All currently uploaded photos will be here
@@ -273,7 +272,7 @@ def create_md_file(pics) -> None:
     pass
 
 
-def do_all(theme: str, last_day: str):
+def do_all(theme: str, last_day: str, args):
     """
     For lazy people. This function does entire process
     :return: Download all photos with their information and details
@@ -281,6 +280,10 @@ def do_all(theme: str, last_day: str):
     pics = retrieve_pics(get_all_info())
     pics.sort(key=lambda x: x.points, reverse=True)
     save_details(pics)
+    if args.task == 'json':
+        logging.warn( 'Task %s complete. Quitting' % args.task )
+        return 
+
     no_of_winners = max([2, round(len(pics) / 15)])
     selected = pics[:no_of_winners]
     last_entry_score = selected[-1].points

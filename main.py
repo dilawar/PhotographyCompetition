@@ -13,8 +13,8 @@ def judge_cal():
     judge.calculate_score("final_Scores.xlsx")
 
 
-def intra():
-    intranet.do_all(THEME, DEADLINE)
+def intra( args ):
+    intranet.do_all(THEME, DEADLINE, args)
 
 def check_defaulters():
     analyze.get_defaulters(THEME, DEADLINE)
@@ -24,7 +24,7 @@ def main( args ):
             , format = '%(asctime)s %(name)-10s %(levelname)-5s %(message)s'
             )
     logging.debug( 'Calling intra' )
-    intra()
+    intra( args )
 
 if __name__ == '__main__':
     import argparse
@@ -45,6 +45,10 @@ if __name__ == '__main__':
         , required = False, action = 'store_const'
         , dest = 'loglevel', const = logging.INFO
         , help = 'Be chatty. Like academic canteen and SLC.'
+        )
+    parser.add_argument('--task', '-t'
+        , required = False, default = 'json'
+        , help = 'Which task: json|all'
         )
     class Args: pass 
     args = Args()
