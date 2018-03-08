@@ -194,8 +194,13 @@ def save_details(photos: list) -> None:
     # information for further process.
     all_info = {}
     for photo in photos:
-        key = ''.join(random.choices(string.ascii_uppercase + string.digits,
-                                     k=10))  # Create some random key
+
+        # This is python3.6 specific. Making a python3.5 compatible version.
+        #key = ''.join(random.choices(string.ascii_uppercase + string.digits,
+        #                             k=10))  # Create some random key
+        alphas = string.ascii_uppercase + string.digits
+        key = ''.join( [ random.choice( alphas ) for i in range(10) ] )
+
         # Create json entry
         all_info[key] = {"uid": key,
                          "url": photo.url,

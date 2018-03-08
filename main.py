@@ -2,16 +2,25 @@
 Main script file
 """
 
-from judging import judge
 from retrieval import intranet, analyze
+
+judge_ = True
+try:
+    from judging import judge
+    judge_ = False
+except ImportError as e:
+    print( '[WARN] Failed to import judge due to %s' % e )
+    print( '\t No judging today' )
+
 import logging
 
 THEME = "Portraits"
 DEADLINE = "25 January 2018"
 
 def judge_cal():
-    judge.calculate_score("final_Scores.xlsx")
-
+    global judge_
+    if judge_:
+        judge.calculate_score("final_Scores.xlsx")
 
 def intra( args ):
     intranet.do_all(THEME, DEADLINE, args)
