@@ -25,10 +25,9 @@ import os
 import random
 import re
 import string
+import logging
 import urllib.request as request
-
 from bs4 import BeautifulSoup
-
 from models.photography import PhotoObject as Photo
 from user_constants import *
 
@@ -213,6 +212,8 @@ def save_details(photos: list) -> None:
     with open(output_file_name + ".json", "w") as f:
         print(json.dumps(all_info), file=f)
 
+    logging.info( 'Wrote %s.json' % output_file_name  )
+
 
 def create_email(photo: Photo, theme, last_date) -> None:
     """
@@ -255,6 +256,7 @@ def create_md_file(pics) -> None:
     for i in range(len(selected), len(pics) - 1):
         if pics[i].points == last_entry_score and last_entry_score != 0:
             selected.append(pics[i])
+
     with open('public.md', "w") as o:
         header = "## Top %d Shortlisted entries for people's choice\n" % len(
             selected)
@@ -290,4 +292,5 @@ def do_all(theme: str, last_day: str):
     for s in selected:
         create_email(s, theme, last_day)
 
+    logging.info( 'Creating public.md' )
     create_md_file(pics)
