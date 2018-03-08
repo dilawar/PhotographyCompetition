@@ -169,11 +169,17 @@ def retrieve_pics(photos: list) -> list:
             count_text, re.sub('[^A-Za-z0-9]+', '', p2.title))
         filename = filename[
                    :20] + ".jpg"  # If name if more than 20 characters,
-        # strip it and add file extension
-        p2.file_name = filename  # Update file_name field in the PhotoObject
-        testfile = request.URLopener()  # start downloading
-        testfile.retrieve(p2.photo_url, photo_store_folder + filename)  # Save
-        file_counter += 1
+
+        # if for some reason file does not get downloaded, warn and continue. 
+        # Required for Hippo integration.
+        try:
+            # strip it and add file extension
+            p2.file_name = filename  # Update file_name field in the PhotoObject
+            testfile = request.URLopener()  # start downloading
+            testfile.retrieve(p2.photo_url, photo_store_folder + filename)  # Save
+            file_counter += 1
+        except Exception as e:
+            logging.warn( "Failed to download %s due to %s" % (p2.photo_url,e))
 
     return photos
 
@@ -215,7 +221,6 @@ def save_details(photos: list) -> None:
     # Dump to json
     with open(output_file_name + ".json", "w") as f:
         print(json.dumps(all_info), file=f)
-
     logging.info( 'Wrote %s.json' % output_file_name  )
 
 
