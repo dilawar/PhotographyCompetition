@@ -47,7 +47,7 @@ if __name__ == '__main__':
         , help = 'Be chatty. Like academic canteen and SLC.'
         )
     parser.add_argument('--task', '-t'
-        , required = False, default = 'json'
+        , required = False, default = 'all'
         , help = 'Which task: json|all'
         )
     class Args: pass 
